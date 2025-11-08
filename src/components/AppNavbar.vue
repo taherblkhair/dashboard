@@ -71,7 +71,8 @@ defineEmits<{
 }>()
 
 import { useRouter } from 'vue-router'
-import { authService, setAuthToken } from '@/services/api'
+import { authService } from '@/services/auth'
+import { setAuthToken } from '@/services/api'
 
 const router = useRouter()
 

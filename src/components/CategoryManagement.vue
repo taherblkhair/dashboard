@@ -3,7 +3,6 @@
   <div class="space-y-6">
     <!-- قسم التصحيح - يمكن إزالته لاحقاً -->
 
-
     <!-- رأس الصفحة -->
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">إدارة الأصناف</h2>
@@ -241,7 +240,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { categoryService } from '../services/api'
+import { categoryService } from '@/services/categories'
 
 // تعريف واجهة Category
 interface Category {

@@ -42,6 +42,12 @@ const router = createRouter({
       component: InvoicesView,
       meta: { requiresAuth: true },
     },
+    {
+      path: '/invoices/:id',
+      name: 'invoice-detail',
+      component: () => import('../views/InvoiceDetailView.vue'),
+      meta: { requiresAuth: true },
+    },
 
     // التسجيل والتسجيل الخاص
     {

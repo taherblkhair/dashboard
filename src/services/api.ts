@@ -23,35 +23,6 @@ api.interceptors.response.use(
 )
 
 // خدمات الأصناف
-export const categoryService = {
-  // جلب جميع الأصناف
-  getAll: () => api.get('/categories'),
-
-  // جلب صنف محدد
-  getById: (id: number) => api.get(`/categories/${id}`),
-
-  // إنشاء صنف جديد
-  create: (data: FormData) =>
-    api.post('/categories', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }),
-
-  // تحديث صنف
-  update: (id: number, data: FormData) =>
-    api.post(`/categories/${id}`, data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }),
-
-  // حذف صنف
-  delete: (id: number) => api.delete(`/categories/${id}`),
-}
-
-// src/services/api.ts
-
 export default api
 
 // ----------------------
@@ -106,10 +77,13 @@ export const authService = {
   login: (data: { email: string; password: string }) => api.post('/login', data),
   // إذا كان الخادم يدعم logout
 
-  register: (data: { name: string; email: string; password: string; password_confirmation: string }) =>
-  api.post('/register', data),
+  register: (data: {
+    name: string
+    email: string
+    password: string
+    password_confirmation: string
+  }) => api.post('/register', data),
 
   // إذا كان الخادم يدعم logout
   logout: () => api.post('/logout'),
-
 }

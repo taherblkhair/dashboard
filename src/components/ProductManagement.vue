@@ -3,9 +3,17 @@
     <!-- رأس الصفحة -->
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">إدارة المنتجات</h2>
-      <button @click="showAddProductModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+      <button
+        @click="showAddProductModal = true"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center"
+      >
         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          ></path>
         </svg>
         إضافة منتج جديد
       </button>
@@ -17,37 +25,80 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الصورة</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المنتج</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الصنف</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">السعر</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الألوان</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                الصورة
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                المنتج
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                الصنف
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                السعر
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                الألوان
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                الإجراءات
+              </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-for="product in products" :key="product.id">
               <td class="px-6 py-4 whitespace-nowrap">
-                <img :src="product.image" :alt="product.name" class="h-10 w-10 rounded-lg object-cover">
+                <img
+                  :src="
+                    product.colors && product.colors.length && product.colors[0]?.image_url
+                      ? product.colors[0].image_url
+                      : product.category?.image_url || 'https://via.placeholder.com/40'
+                  "
+                  :alt="product.name"
+                  class="h-10 w-10 rounded-lg object-cover"
+                />
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
                 <div class="text-sm text-gray-500">{{ product.description }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.category }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.price }} ر.س</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ product.category?.name || product.category_id || '-' }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ product.base_price }} ر.س
+              </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex space-x-1 space-x-reverse">
-                  <span v-for="color in product.colors" :key="color.name"
-                        class="w-6 h-6 rounded-full border border-gray-300"
-                        :style="{ backgroundColor: color.code }"
-                        :title="`${color.name} (${color.quantity})`">
+                  <span
+                    v-for="(color, idx) in product.colors || []"
+                    :key="idx"
+                    class="w-6 h-6 rounded-full border border-gray-300"
+                    :style="{ backgroundColor: color.color_code || color.code }"
+                    :title="`${color.color_name || color.name} (${color.quantity})`"
+                  >
                   </span>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2 space-x-reverse">
-                <button @click="editProduct(product)" class="text-blue-600 hover:text-blue-900">تعديل</button>
-                <button @click="deleteProduct(product.id)" class="text-red-600 hover:text-red-900">حذف</button>
+                <button @click="editProduct(product)" class="text-blue-600 hover:text-blue-900">
+                  تعديل
+                </button>
+                <button @click="deleteProduct(product.id)" class="text-red-600 hover:text-red-900">
+                  حذف
+                </button>
               </td>
             </tr>
           </tbody>
@@ -56,36 +107,58 @@
     </div>
 
     <!-- نافذة إضافة/تعديل منتج -->
-    <div v-if="showAddProductModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+    <div
+      v-if="showAddProductModal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+    >
+      <div
+        class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white"
+      >
         <div class="mt-3">
-          <h3 class="text-lg font-medium text-gray-900 mb-4">{{ editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد' }}</h3>
+          <h3 class="text-lg font-medium text-gray-900 mb-4">
+            {{ editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد' }}
+          </h3>
 
           <form @submit.prevent="saveProduct" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">اسم المنتج</label>
-                <input v-model="productForm.name" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <input
+                  v-model="productForm.name"
+                  type="text"
+                  class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">الصنف</label>
-                <select v-model="productForm.category" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <select
+                  v-model="productForm.category_id"
+                  class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
                   <option value="">اختر الصنف</option>
-                  <option value="حقائب">حقائب</option>
-                  <option value="أحذية">أحذية</option>
-                  <option value="ملابس">ملابس</option>
+                  <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
                 </select>
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">السعر</label>
-                <input v-model="productForm.price" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <input
+                  v-model="productForm.price"
+                  type="number"
+                  class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">الوصف</label>
-                <textarea v-model="productForm.description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                <textarea
+                  v-model="productForm.description"
+                  class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ></textarea>
               </div>
             </div>
 
@@ -93,22 +166,58 @@
             <div>
               <div class="flex justify-between items-center mb-2">
                 <label class="block text-sm font-medium text-gray-700">الألوان والكميات</label>
-                <button type="button" @click="addColor" class="text-sm text-blue-600 hover:text-blue-800">+ إضافة لون</button>
+                <button
+                  type="button"
+                  @click="addColor"
+                  class="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  + إضافة لون
+                </button>
               </div>
 
-              <div v-for="(color, index) in productForm.colors" :key="index" class="flex items-center space-x-2 space-x-reverse mb-2">
-                <input v-model="color.name" placeholder="اسم اللون" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1">
-                <input v-model="color.quantity" type="number" placeholder="الكمية" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-24">
-                <input v-model="color.code" type="color" class="w-10 h-10 border border-gray-300 rounded-md">
-                <button type="button" @click="removeColor(index)" class="text-red-600 hover:text-red-800">×</button>
+              <div
+                v-for="(color, index) in productForm.colors"
+                :key="index"
+                class="flex items-center space-x-2 space-x-reverse mb-2"
+              >
+                <input
+                  v-model="color.name"
+                  placeholder="اسم اللون"
+                  class="px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+                />
+                <input
+                  v-model="color.quantity"
+                  type="number"
+                  placeholder="الكمية"
+                  class="px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-24"
+                />
+                <input
+                  v-model="color.code"
+                  type="color"
+                  class="w-10 h-10 border border-gray-300 rounded-md"
+                />
+                <button
+                  type="button"
+                  @click="removeColor(index)"
+                  class="text-red-600 hover:text-red-800"
+                >
+                  ×
+                </button>
               </div>
             </div>
 
             <div class="flex justify-end space-x-2 space-x-reverse pt-4">
-              <button type="button" @click="showAddProductModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md">
+              <button
+                type="button"
+                @click="showAddProductModal = false"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
+              >
                 إلغاء
               </button>
-              <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+              <button
+                type="submit"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+              >
                 {{ editingProduct ? 'تحديث' : 'حفظ' }}
               </button>
             </div>
@@ -120,50 +229,88 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { productService } from '@/services/products'
+import { categoryService } from '@/services/categories'
 
 interface ProductColor {
-  name: string
+  color_name?: string
+  color_code?: string
   quantity: number
-  code: string
+  image_url?: string | null
+  name?: string // local form uses `name`
+  code?: string
+}
+
+interface Category {
+  id: number
+  name: string
+  image_url?: string
 }
 
 interface Product {
   id: number
   name: string
-  description: string
-  category: string
-  price: number
-  image: string
-  colors: ProductColor[]
+  description: string | null
+  base_price: string | number
+  category?: Category | null
+  category_id?: number
+  colors?: ProductColor[]
 }
 
 const showAddProductModal = ref(false)
 const editingProduct = ref<Product | null>(null)
+const loading = ref(false)
+const formLoading = ref(false)
+const error = ref('')
+
+const categories = ref<Category[]>([])
+const products = ref<Product[]>([])
 
 const productForm = reactive({
   name: '',
-  category: '',
-  price: '',
+  category_id: '' as string | number,
+  price: '' as string | number,
   description: '',
-  colors: [] as ProductColor[]
+  colors: [] as ProductColor[],
 })
 
-const products = ref<Product[]>([
-  {
-    id: 1,
-    name: 'حقيبة يد',
-    description: 'حقيبة يد نسائية فاخرة',
-    category: 'حقائب',
-    price: 250,
-    image: 'https://via.placeholder.com/40',
-    colors: [
-      { name: 'أبيض', quantity: 10, code: '#ffffff' },
-      { name: 'أسود', quantity: 5, code: '#000000' },
-      { name: 'وردي', quantity: 7, code: '#ff69b4' }
-    ]
+const fetchCategories = async () => {
+  try {
+    const res = await categoryService.getAll()
+    const data = res.data
+    if (Array.isArray(data)) categories.value = data
+    else if (data && Array.isArray(data.data)) categories.value = data.data
+  } catch (e) {
+    console.warn('Failed to load categories', e)
   }
-])
+}
+
+const fetchProducts = async () => {
+  loading.value = true
+  error.value = ''
+  try {
+    const res = await productService.getAll()
+    const d = res.data
+
+    console.log('✅ API Returned:', d)
+
+    if (Array.isArray(d)) {
+      // ✅ الحالة الحالية (الرد من Laravel مباشرة)
+      products.value = d
+    } else if (d && Array.isArray(d.data)) {
+      products.value = d.data
+    } else {
+      console.warn('⚠️ Unexpected API format', d)
+      products.value = []
+    }
+  } catch (e) {
+    console.error('❌ Error fetching products', e)
+    error.value = 'فشل في جلب المنتجات'
+  } finally {
+    loading.value = false
+  }
+}
 
 const addColor = () => {
   productForm.colors.push({ name: '', quantity: 0, code: '#000000' })
@@ -175,50 +322,72 @@ const removeColor = (index: number) => {
 
 const editProduct = (product: Product) => {
   editingProduct.value = product
-  productForm.name = product.name
-  productForm.category = product.category
-  productForm.price = product.price.toString()
-  productForm.description = product.description
-  productForm.colors = [...product.colors]
+  productForm.name = product.name || ''
+  productForm.category_id = product.category?.id ?? product.category_id ?? ''
+  productForm.price = product.base_price ?? ''
+  productForm.description = product.description ?? ''
+  productForm.colors = (product.colors || []).map((c) => ({
+    name: c.color_name || c.name || '',
+    quantity: c.quantity || 0,
+    code: c.color_code || c.code || '#000000',
+  }))
   showAddProductModal.value = true
 }
 
-const saveProduct = () => {
-  if (editingProduct.value) {
-    // تحديث المنتج
-    const index = products.value.findIndex(p => p.id === editingProduct.value!.id)
-    products.value.splice(index, 1, {
-      ...productForm,
-      id: editingProduct.value.id,
-      price: Number(productForm.price),
-      image: editingProduct.value.image
-    })
-  } else {
-    // إضافة منتج جديد
-    const newProduct: Product = {
-      ...productForm,
-      id: products.value.length + 1,
-      price: Number(productForm.price),
-      image: 'https://via.placeholder.com/40'
+const saveProduct = async () => {
+  formLoading.value = true
+  error.value = ''
+  try {
+    const payload: Record<string, unknown> = {
+      name: productForm.name,
+      description: productForm.description,
+      base_price: Number(productForm.price),
+      category_id: Number(productForm.category_id),
+      colors: productForm.colors.map((c) => ({
+        color_name: c.name,
+        color_code: c.code,
+        quantity: Number(c.quantity),
+      })),
     }
-    products.value.push(newProduct)
+
+    if (editingProduct.value) {
+      await productService.update(editingProduct.value.id, payload)
+    } else {
+      await productService.create(payload)
+    }
+
+    await fetchProducts()
+    resetForm()
+    showAddProductModal.value = false
+  } catch (e) {
+    console.error('Error saving product', e)
+    error.value = 'فشل في حفظ المنتج'
+  } finally {
+    formLoading.value = false
   }
-  resetForm()
-  showAddProductModal.value = false
 }
 
-const deleteProduct = (id: number) => {
-  if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
-    products.value = products.value.filter(p => p.id !== id)
+const deleteProduct = async (id: number) => {
+  if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return
+  try {
+    await productService.delete(id)
+    await fetchProducts()
+  } catch (e) {
+    console.error('Error deleting product', e)
+    error.value = 'فشل في حذف المنتج'
   }
 }
 
 const resetForm = () => {
   productForm.name = ''
-  productForm.category = ''
+  productForm.category_id = ''
   productForm.price = ''
   productForm.description = ''
   productForm.colors = []
   editingProduct.value = null
 }
+
+onMounted(async () => {
+  await Promise.all([fetchCategories(), fetchProducts()])
+})
 </script>

@@ -54,7 +54,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { authService, setAuthToken } from '../../services/api'
+import { authService } from '@/services/auth'
+import { setAuthToken } from '@/services/api'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios' // <-- ضروري لاستخدام isAxiosError
 

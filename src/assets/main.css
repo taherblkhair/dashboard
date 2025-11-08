@@ -1,0 +1,39 @@
+@import './base.css';
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+/* Removed an aggressive large-screen layout that forced the <body>
+   to become flex and set #app to a two-column grid. That created
+   visible gutters showing the page background (dark in dark mode)
+   and made the layout non-responsive. The app uses Tailwind for
+   responsive layout, so keep #app centered but don't change the
+   document flow at the body level. */
+
+/* Ensure the document background stays light so the centered #app
+  doesn't reveal a dark page edge (visible on some systems when
+  prefers-color-scheme: dark is active). If you prefer a dark
+  theme, we can instead add a toggle; for now keep the page
+  background white to match the app panels. */
+html,
+body {
+  background: var(--vt-c-white);
+}

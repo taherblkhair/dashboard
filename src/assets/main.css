@@ -1,8 +1,10 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
+  /* Make the app full-bleed so it spans the entire viewport width
+     and doesn't show white gutters on large screens. Keep the
+     internal padding for consistent spacing. */
+  width: 100%;
   padding: 2rem;
   font-weight: normal;
 }
@@ -35,5 +37,9 @@ a,
   background white to match the app panels. */
 html,
 body {
-  background: var(--vt-c-white);
+  /* Use a light gray page background to match the app's bg-gray-50
+     (Tailwind `bg-gray-50` / #f9fafb). This prevents the centered
+     `#app` (which is gray) from showing white gutters at the
+     document edges. */
+  background: #f9fafb;
 }

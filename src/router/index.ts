@@ -4,6 +4,7 @@ import ProductsView from '../views/ProductsView.vue'
 import CategoriesView from '../views/CategoriesView.vue'
 import CustomersView from '../views/CustomersView.vue'
 import InvoicesView from '../views/InvoicesView.vue'
+import InvoicesPage from '../views/invoices/InvoicesPage.vue'
 import RegisterPage from '@/views/auth/RegisterPage.vue'
 import LoginPage from '@/views/auth/LoginPage.vue'
 import { getAuthToken } from '@/services/api'
@@ -41,6 +42,13 @@ const router = createRouter({
       name: 'invoices',
       component: InvoicesView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/orders',
+      name: 'orders',
+      component: InvoicesPage,
+      meta: { requiresAuth: true }, // مؤقتًا استخدم نفس مكون الفواتير
+      // meta: { requiresAuth: true },
     },
     {
       path: '/invoices/:id',

@@ -132,7 +132,7 @@ const formatCurrency = (value: string | number) => {
     const num = typeof value === 'string' ? parseFloat(value) : Number(value)
     return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
-      currency: 'SAR',
+      currency: 'LYD',
       maximumFractionDigits: 2,
     }).format(num)
   } catch {

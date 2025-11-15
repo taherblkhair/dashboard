@@ -248,7 +248,7 @@ const formatCurrency = (val: unknown) => {
     const n = Number(val ?? 0)
     return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
-      currency: 'SAR',
+      currency: 'LYD',
       maximumFractionDigits: 2,
     }).format(n)
   } catch {

@@ -93,17 +93,51 @@
           </button>
         </div>
 
-        <div v-if="error" class="mt-2 text-red-600">{{ error }}</div>
-        <div v-if="shortages.length" class="mt-2 text-red-700">
-          <p class="font-semibold">تفاصيل النقص في المخزون:</p>
-          <ul class="list-disc mr-5 mt-1">
-            <li v-for="(s, i) in shortages" :key="i">
-              المنتج: <strong>{{ getProductName(s.product_id) }}</strong> ، اللون:
-              <strong>{{ getColorName(s.product_id, s.product_color_id) }}</strong> ، المطلوب:
-              <strong>{{ s.requested ?? '-' }}</strong> ، المتوفر:
-              <strong>{{ s.available ?? '-' }}</strong>
-            </li>
-          </ul>
+        <div
+          v-if="error || shortages.length"
+          class="mt-4 p-4 rounded-md bg-red-50 border border-red-100"
+        >
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-semibold text-red-800">
+                {{ error || 'حدثت مشكلة أثناء إنشاء الفاتورة' }}
+              </p>
+              <p v-if="shortages.length && error" class="text-sm text-red-700 mt-1">
+                {{ shortages.length }} عناصر بها نقص في المخزون.
+              </p>
+              <p v-else-if="shortages.length" class="text-sm text-red-700 mt-1">
+                تفاصيل النقص في المخزون أدناه:
+              </p>
+            </div>
+            <div>
+              <button @click="clearError" class="text-red-600 hover:text-red-800 text-sm">
+                إغلاق
+              </button>
+            </div>
+          </div>
+
+          <div v-if="shortages.length" class="mt-3 overflow-x-auto">
+            <table class="min-w-full text-sm border-collapse">
+              <thead>
+                <tr class="text-right">
+                  <th class="px-3 py-2 font-medium text-red-800">المنتج</th>
+                  <th class="px-3 py-2 font-medium text-red-800">اللون</th>
+                  <th class="px-3 py-2 font-medium text-red-800">المطلوب</th>
+                  <th class="px-3 py-2 font-medium text-red-800">المتوفر</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(s, i) in shortages" :key="i" class="odd:bg-red-25 even:bg-transparent">
+                  <td class="px-3 py-2 text-right">{{ getProductName(s.product_id) }}</td>
+                  <td class="px-3 py-2 text-right">
+                    {{ getColorName(s.product_id, s.product_color_id) }}
+                  </td>
+                  <td class="px-3 py-2 text-right">{{ s.requested ?? '-' }}</td>
+                  <td class="px-3 py-2 text-right">{{ s.available ?? '-' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div v-if="success" class="mt-2 text-green-600">تم إنشاء الفاتورة بنجاح.</div>
       </form>
@@ -246,6 +280,11 @@ const getColorName = (pid: unknown, cid: unknown) => {
   if (!p || !p.colors) return String(cid ?? '-')
   const c = p.colors.find((col) => col.id === colorId)
   return c?.color_name ?? c?.color_code ?? String(cid ?? '-')
+}
+
+const clearError = () => {
+  error.value = ''
+  shortages.value = []
 }
 
 const addItem = () => {

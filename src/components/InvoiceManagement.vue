@@ -94,6 +94,17 @@
         </div>
 
         <div v-if="error" class="mt-2 text-red-600">{{ error }}</div>
+        <div v-if="shortages.length" class="mt-2 text-red-700">
+          <p class="font-semibold">تفاصيل النقص في المخزون:</p>
+          <ul class="list-disc mr-5 mt-1">
+            <li v-for="(s, i) in shortages" :key="i">
+              المنتج: <strong>{{ getProductName(s.product_id) }}</strong> ، اللون:
+              <strong>{{ getColorName(s.product_id, s.product_color_id) }}</strong> ، المطلوب:
+              <strong>{{ s.requested ?? '-' }}</strong> ، المتوفر:
+              <strong>{{ s.available ?? '-' }}</strong>
+            </li>
+          </ul>
+        </div>
         <div v-if="success" class="mt-2 text-green-600">تم إنشاء الفاتورة بنجاح.</div>
       </form>
     </div>
@@ -179,6 +190,7 @@ const loading = ref(false)
 const formLoading = ref(false)
 const error = ref('')
 const success = ref(false)
+const shortages = ref<Array<Record<string, unknown>>>([])
 
 const form = reactive({
   customer_id: '' as number | '',
@@ -219,6 +231,21 @@ const fetchSales = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const getProductName = (pid: unknown) => {
+  const id = Number(pid)
+  const p = products.value.find((x) => x.id === id)
+  return p?.name ?? String(pid ?? '-')
+}
+
+const getColorName = (pid: unknown, cid: unknown) => {
+  const id = Number(pid)
+  const colorId = Number(cid)
+  const p = products.value.find((x) => x.id === id)
+  if (!p || !p.colors) return String(cid ?? '-')
+  const c = p.colors.find((col) => col.id === colorId)
+  return c?.color_name ?? c?.color_code ?? String(cid ?? '-')
 }
 
 const addItem = () => {
@@ -273,6 +300,7 @@ const createSale = async () => {
 
   formLoading.value = true
   error.value = ''
+  shortages.value = []
   success.value = false
 
   try {
@@ -295,7 +323,28 @@ const createSale = async () => {
     form.items = []
   } catch (e: unknown) {
     console.error('Error creating sale', e)
-    error.value = 'فشل في إنشاء الفاتورة'
+    // axios error shape: (e as AxiosError).response.data
+    const errObj = e as { response?: { data?: unknown }; message?: string }
+    const respData = errObj?.response?.data
+    if (respData && typeof respData === 'object') {
+      const data = respData as {
+        message?: string
+        shortages?: Array<Record<string, unknown>>
+      }
+      // If API provided a message, show it
+      if (data.message) {
+        error.value = String(data.message)
+      } else {
+        error.value = 'فشل في إنشاء الفاتورة'
+      }
+
+      // If shortages provided, store them for display
+      if (Array.isArray(data.shortages) && data.shortages.length) {
+        shortages.value = data.shortages
+      }
+    } else {
+      error.value = 'فشل في إنشاء الفاتورة'
+    }
   } finally {
     formLoading.value = false
   }

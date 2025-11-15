@@ -14,9 +14,50 @@
         >
           {{ updating ? 'جارٍ...' : 'تحديث' }}
         </button>
-        <button @click="downloadPdf" class="ml-2 px-3 py-1 bg-gray-700 text-white rounded-md">
-          تحميل PDF
-        </button>
+
+        <!-- Actions dropdown -->
+        <div class="relative ml-2" ref="actionsRoot">
+          <button
+            @click="toggleActions"
+            type="button"
+            class="px-3 py-1 bg-gray-700 text-white rounded-md flex items-center"
+            aria-haspopup="true"
+            :aria-expanded="showActions ? 'true' : 'false'"
+          >
+            إجراءات
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          <div
+            v-if="showActions"
+            class="origin-top-right absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+          >
+            <div class="py-1" role="menu" aria-orientation="vertical">
+              <button
+                @click="downloadPdf"
+                class="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+              >
+                تحميل PDF
+              </button>
+              <button
+                @click="printInvoice"
+                class="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+              >
+                طباعة
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- end actions -->
       </div>
     </div>
 
@@ -64,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { salesService } from '@/services/sales'
 
@@ -95,6 +136,8 @@ const sale = ref<Sale | null>(null)
 const loading = ref(false)
 const updating = ref(false)
 const error = ref('')
+const showActions = ref(false)
+const actionsRoot = ref<HTMLElement | null>(null)
 
 const statuses = ['pending', 'processing', 'delivered', 'paid', 'cancelled']
 const status = ref<string>(String(statuses[0]))
@@ -144,6 +187,26 @@ onMounted(async () => {
     return
   }
   await fetchSale()
+})
+
+const onDocumentClick = (e: MouseEvent) => {
+  const root = actionsRoot.value
+  if (!root) return
+  if (e.target instanceof Node && !root.contains(e.target)) {
+    showActions.value = false
+  }
+}
+
+const toggleActions = () => {
+  showActions.value = !showActions.value
+}
+
+onMounted(() => {
+  document.addEventListener('click', onDocumentClick)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onDocumentClick)
 })
 
 const printInvoice = () => {

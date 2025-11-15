@@ -78,7 +78,7 @@
                 {{ product.category?.name || product.category_id || '-' }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ product.base_price }} ر.س
+                {{ product.base_price }}د.ل
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex space-x-1 space-x-reverse">

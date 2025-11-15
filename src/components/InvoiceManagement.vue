@@ -8,7 +8,11 @@
       <form @submit.prevent="createSale" class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">العميل</label>
-          <select v-model="form.customer_id" class="w-full px-3 text-black py-2 border rounded-md" required>
+          <select
+            v-model="form.customer_id"
+            class="w-full px-3 text-black py-2 border rounded-md"
+            required
+          >
             <option value="">اختر العميل</option>
             <option v-for="c in customers" :key="c.id" :value="c.id">
               {{ c.name }} - {{ c.phone || c.email }}
@@ -35,7 +39,10 @@
 
               <div>
                 <label class="text-xs text-gray-600">اللون</label>
-                <select v-model="item.product_color_id" class="w-full text-black px-2 py-1 border rounded-md">
+                <select
+                  v-model="item.product_color_id"
+                  class="w-full text-black px-2 py-1 border rounded-md"
+                >
                   <option value="">اختر اللون</option>
                   <option v-for="c in item.availableColors" :key="c.id" :value="c.id">
                     {{ c.color_name || c.color_code || c.id }} ({{ c.quantity }})
@@ -109,7 +116,7 @@
             <tr v-for="s in sales" :key="s.id">
               <td class="px-4 text-black py-2">{{ s.id }}</td>
               <td class="px-4 text-black py-2">{{ s.customer?.name || s.customer_id }}</td>
-              <td class="px-4 text-black py-2">{{ s.total }} ر.س</td>
+              <td class="px-4 text-black py-2">{{ s.total }}د.ل</td>
               <td class="px-4 text-black py-2">{{ s.status }}</td>
               <td class="px-4 text-black py-2">{{ formatDate(s.created_at) }}</td>
             </tr>
@@ -252,7 +259,7 @@ const total = computed(() => {
   )
 })
 
-const formattedTotal = computed(() => `${total.value.toFixed(2)} ر.س`)
+const formattedTotal = computed(() => `${total.value.toFixed(2)}د.ل`)
 
 const createSale = async () => {
   if (!form.customer_id) {

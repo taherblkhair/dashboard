@@ -8,6 +8,7 @@
         class="flex-1 p-6 transition-all duration-300 overflow-auto"
         :class="{ 'mr-64': sidebarOpen && !hideLayout }"
       >
+        <BreadcrumbsPage v-if="!hideLayout" />
         <router-view />
       </main>
     </div>
@@ -19,6 +20,7 @@ import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import AppNavbar from './components/AppNavbar.vue'
 import AppSidebar from './components/AppSidebar.vue'
+import BreadcrumbsPage from './components/BreadcrumbsPage.vue'
 
 // غير القيمة إلى true لتكون مفتوحة افتراضياً
 const sidebarOpen = ref(true)

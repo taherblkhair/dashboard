@@ -17,44 +17,44 @@ const router = createRouter({
       path: '/',
       name: 'dashboard',
       component: DashboardView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, breadcrumb: 'لوحة التحكم' },
     },
     {
       path: '/products',
       name: 'products',
       component: ProductsView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, breadcrumb: 'المنتجات' },
     },
     {
       path: '/categories',
       name: 'categories',
       component: CategoriesView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, breadcrumb: 'الأصناف' },
     },
     {
       path: '/customers',
       name: 'customers',
       component: CustomersView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, breadcrumb: 'الزبائن' },
     },
     {
       path: '/invoices',
       name: 'invoices',
       component: InvoicesView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, breadcrumb: 'الفواتير', parent: 'dashboard' },
     },
     {
       path: '/orders',
       name: 'orders',
       component: InvoicesPage,
-      meta: { requiresAuth: true }, // مؤقتًا استخدم نفس مكون الفواتير
+      meta: { requiresAuth: true, breadcrumb: 'الطلبات' }, // مؤقتًا استخدم نفس مكون الفواتير
       // meta: { requiresAuth: true },
     },
     {
       path: '/invoices/:id',
       name: 'invoice-detail',
       component: () => import('../views/InvoiceDetailView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, breadcrumb: 'تفاصيل الفاتورة', parent: 'invoices' },
     },
 
     // التسجيل والتسجيل الخاص

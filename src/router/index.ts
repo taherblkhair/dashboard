@@ -54,7 +54,7 @@ const router = createRouter({
       path: '/invoices/:id',
       name: 'invoice-detail',
       component: () => import('../views/InvoiceDetailView.vue'),
-      meta: { requiresAuth: true, breadcrumb: 'تفاصيل الفاتورة', parent: 'orders' },
+      meta: { requiresAuth: true, breadcrumb: 'تفاصيل الطلبية', parent: 'orders' },
     },
 
     // التسجيل والتسجيل الخاص

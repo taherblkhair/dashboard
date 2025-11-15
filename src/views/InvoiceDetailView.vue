@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6 text-black">
     <div class="flex justify-between items-center">
-      <h2 class="text-2xl font-bold text-black">تفاصيل الفاتورة #{{ sale?.id || '-' }}</h2>
+      <h2 class="text-2xl font-bold text-black">تفاصيل الطلبية رقم #{{ sale?.id || '-' }}</h2>
       <div class="flex items-center space-x-2 space-x-reverse no-print">
         <label class="text-sm">حالة الفاتورة</label>
         <select v-model="status" class="ml-2 px-2 py-1 border rounded-md">

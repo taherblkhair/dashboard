@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <div class="flex justify-between items-center">
-      <h2 class="text-2xl font-bold text-gray-900">إنشاء فاتورة / بيع جديد</h2>
+      <h2 class="text-2xl font-bold text-gray-900">إنشاء طلبية / بيع جديد</h2>
     </div>
 
     <div class="bg-white rounded-lg shadow p-6">
@@ -139,12 +139,12 @@
             </table>
           </div>
         </div>
-        <div v-if="success" class="mt-2 text-green-600">تم إنشاء الفاتورة بنجاح.</div>
+        <div v-if="success" class="mt-2 text-green-600">تم إنشاء طلبية جديدة بنجاح.</div>
       </form>
     </div>
 
     <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-medium text-black mb-4">سجل الفواتير</h3>
+      <h3 class="text-lg font-medium text-black mb-4">سجل الطلبات</h3>
       <div v-if="loading">جاري التحميل...</div>
       <div v-else>
         <table class="min-w-full divide-y divide-gray-200">

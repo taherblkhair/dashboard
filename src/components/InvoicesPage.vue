@@ -1,6 +1,14 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">إدارة</h1>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">إدارة الطلبات</h1>
+      <button
+        @click="goToCreate"
+        class="inline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 transition-colors"
+      >
+        إضافة طلب جديد
+      </button>
+    </div>
     <div class="bg-white rounded-lg shadow p-6">
       <!-- قائمة الفواتير -->
       <div v-if="loading" class="text-gray-500">جارٍ التحميل...</div>
@@ -84,6 +92,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import salesService from '@/services/sales'
 
 type Customer = {
@@ -126,6 +135,11 @@ const loadInvoices = async () => {
 onMounted(() => {
   loadInvoices()
 })
+
+const router = useRouter()
+const goToCreate = () => {
+  router.push({ name: 'invoices' })
+}
 
 const formatCurrency = (value: string | number) => {
   try {

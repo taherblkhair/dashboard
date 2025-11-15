@@ -1,9 +1,9 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 text-black">
     <div class="flex justify-between items-center">
-      <h2 class="text-2xl font-bold text-gray-900">تفاصيل الفاتورة #{{ sale?.id || '-' }}</h2>
+      <h2 class="text-2xl font-bold text-black">تفاصيل الفاتورة #{{ sale?.id || '-' }}</h2>
       <div>
-        <label class="text-sm text-gray-600">حالة الفاتورة</label>
+        <label class="text-sm ">حالة الفاتورة</label>
         <select v-model="status" class="ml-2 px-2 py-1 border rounded-md">
           <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
         </select>
@@ -19,7 +19,7 @@
 
     <div v-if="loading" class="p-6 bg-white rounded shadow">جاري التحميل...</div>
 
-    <div v-else-if="sale" class="bg-white rounded shadow p-6">
+    <div v-else-if="sale" class="bg-white rounded text-black shadow p-6">
       <div class="mb-4">
         <div><strong>العميل:</strong> {{ sale.customer?.name || sale.customer_id }}</div>
         <div>
@@ -38,7 +38,7 @@
             <th class="px-4 py-2 text-right text-sm text-gray-500">المجموع</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white divide-y divide-gray-200 text-black">
           <tr v-for="item in sale.items || []" :key="item.id">
             <td class="px-4 py-2">{{ item.product?.name || item.product_id }}</td>
             <td class="px-4 py-2">{{ item.color?.color_name || item.color?.id || '-' }}</td>

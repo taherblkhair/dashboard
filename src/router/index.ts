@@ -41,20 +41,20 @@ const router = createRouter({
       path: '/invoices',
       name: 'invoices',
       component: InvoicesView,
-      meta: { requiresAuth: true, breadcrumb: 'الفواتير', parent: 'dashboard' },
+      meta: { requiresAuth: true, breadcrumb: 'الفواتير'},
     },
     {
       path: '/orders',
       name: 'orders',
       component: InvoicesPage,
-      meta: { requiresAuth: true, breadcrumb: 'الطلبات' }, // مؤقتًا استخدم نفس مكون الفواتير
+      meta: { requiresAuth: true, breadcrumb: 'الطلبات',parent: 'dashboard' }, // مؤقتًا استخدم نفس مكون الفواتير
       // meta: { requiresAuth: true },
     },
     {
       path: '/invoices/:id',
       name: 'invoice-detail',
       component: () => import('../views/InvoiceDetailView.vue'),
-      meta: { requiresAuth: true, breadcrumb: 'تفاصيل الفاتورة', parent: 'invoices' },
+      meta: { requiresAuth: true, breadcrumb: 'تفاصيل الفاتورة', parent: 'orders' },
     },
 
     // التسجيل والتسجيل الخاص

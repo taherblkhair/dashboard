@@ -17,8 +17,34 @@
 
   --vt-c-text-light-1: #000000;
   --vt-c-text-light-2: #000000;
-  --vt-c-text-dark-1:#000000;
+  --vt-c-text-dark-1: #000000;
   --vt-c-text-dark-2: #000000;
+}
+
+/* Print styling: only show elements marked with .printable when printing */
+@media print {
+  /* hide everything by default */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* show printable area */
+  .printable,
+  .printable * {
+    visibility: visible !important;
+  }
+
+  .printable {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+  }
+
+  /* ensure nav/sidebar and interactive controls are hidden */
+  .no-print {
+    display: none !important;
+  }
 }
 
 /* semantic color variables for this project */

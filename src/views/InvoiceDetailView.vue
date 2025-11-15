@@ -2,7 +2,7 @@
   <div class="space-y-6 text-black">
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-black">تفاصيل الفاتورة #{{ sale?.id || '-' }}</h2>
-      <div>
+      <div class="flex items-center space-x-2 space-x-reverse no-print">
         <label class="text-sm">حالة الفاتورة</label>
         <select v-model="status" class="ml-2 px-2 py-1 border rounded-md">
           <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
@@ -14,12 +14,15 @@
         >
           {{ updating ? 'جارٍ...' : 'تحديث' }}
         </button>
+        <button @click="downloadPdf" class="ml-2 px-3 py-1 bg-gray-700 text-white rounded-md">
+          تحميل PDF
+        </button>
       </div>
     </div>
 
     <div v-if="loading" class="p-6 bg-white rounded shadow">جاري التحميل...</div>
 
-    <div v-else-if="sale" class="bg-white rounded text-black shadow p-6">
+    <div v-else-if="sale" class="bg-white rounded text-black shadow p-6 printable" id="print-area">
       <div class="mb-4">
         <div><strong>العميل:</strong> {{ sale.customer?.name || sale.customer_id }}</div>
         <div>
@@ -119,8 +122,8 @@ const updateStatus = async () => {
   error.value = ''
   try {
     await salesService.update(id, { status: status.value })
-    // refresh
-    await fetchSale()
+    // after successful update navigate to /orders
+    router.push({ name: 'orders' })
   } catch (e) {
     console.error('Failed to update status', e)
     error.value = 'فشل في تحديث حالة الفاتورة'
@@ -142,4 +145,46 @@ onMounted(async () => {
   }
   await fetchSale()
 })
+
+const printInvoice = () => {
+  try {
+    window.print()
+  } catch (e) {
+    // fall back silently and log
+    // window.print may be blocked in some environments
+    // keep console error for debugging
+
+    console.error('print failed', e)
+  }
+}
+
+const downloadPdf = async () => {
+  try {
+    const el = document.getElementById('print-area')
+    if (!el) {
+      console.error('print area not found')
+      return
+    }
+
+    const html2pdfModule = await import('html2pdf.js')
+    // html2pdf types aren't present here; allow a narrow any for the module default
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const html2pdf = (html2pdfModule && (html2pdfModule as any).default) || html2pdfModule
+
+    const filename = `invoice-${sale.value?.id || 'print'}.pdf`
+
+    const opt = {
+      margin: 10,
+      filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    }
+
+    await html2pdf().set(opt).from(el).save()
+  } catch (err) {
+    console.error('PDF generation failed, falling back to print dialog', err)
+    printInvoice()
+  }
+}
 </script>

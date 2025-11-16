@@ -53,7 +53,7 @@
             </svg>
           </div>
           <div class="mr-4">
-            <p class="text-sm font-medium text-black">الفواتير هذا الشهر</p>
+            <p class="text-sm font-medium text-black">الطلبات هذا الشهر</p>
             <p class="text-2xl font-bold text-black">{{ overview.invoices_this_month ?? '—' }}</p>
           </div>
         </div>

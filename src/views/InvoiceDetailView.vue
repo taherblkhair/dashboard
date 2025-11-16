@@ -5,10 +5,10 @@
       <div class="flex items-center space-x-2 space-x-reverse no-print">
         <label class="text-sm">حالة الفاتورة</label>
         <select v-model="status" class="ml-2 px-2 py-1 border rounded-md">
-          <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
+          <option v-for="s in statuses" :key="s" :value="s">{{ statusLabel(s) }}</option>
         </select>
         <button
-          @click="updateStatus"
+          @click="openConfirm"
           :disabled="updating"
           class="ml-2 px-3 py-1 bg-blue-600 text-white rounded-md"
         >
@@ -101,6 +101,27 @@
     <div v-else class="p-6 bg-white rounded shadow">لم يتم العثور على الفاتورة</div>
 
     <div v-if="error" class="text-red-600">{{ error }}</div>
+
+    <!-- Confirmation modal for status update -->
+    <div v-if="showConfirm" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black opacity-40" @click="showConfirm = false"></div>
+      <div class="relative bg-white rounded-lg shadow-lg max-w-md w-full p-6">
+        <h3 class="text-lg font-semibold mb-3">تأكيد تغيير الحالة</h3>
+        <p class="mb-4">
+          هل أنت متأكد أنك تريد تغيير حالة هذه الفاتورة إلى «{{ statusLabel(status) }}»؟
+        </p>
+        <div class="flex justify-end space-x-2 space-x-reverse">
+          <button @click="showConfirm = false" class="px-3 py-1 border rounded-md">إلغاء</button>
+          <button
+            @click="performUpdate"
+            :disabled="updating"
+            class="px-3 py-1 bg-blue-600 text-white rounded-md"
+          >
+            {{ updating ? 'جارٍ...' : 'تأكيد' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -139,8 +160,28 @@ const error = ref('')
 const showActions = ref(false)
 const actionsRoot = ref<HTMLElement | null>(null)
 
+// confirmation modal for status change
+const showConfirm = ref(false)
+const openConfirm = () => {
+  showConfirm.value = true
+}
+
 const statuses = ['pending', 'processing', 'delivered', 'paid', 'cancelled']
 const status = ref<string>(String(statuses[0]))
+
+// Human-friendly Arabic labels for status codes. Keep the value as the
+// English key (used by the API) but display the Arabic label in the UI.
+const statusLabels: Record<string, string> = {
+  pending: 'قيد الانتظار',
+  processing: 'قيد المعالجة',
+  delivered: 'تم التوصيل',
+  paid: 'مدفوع',
+  cancelled: 'ملغي',
+}
+
+const statusLabel = (s: string) => {
+  return statusLabels[s] || String(s)
+}
 
 const id = Number(route.params.id)
 
@@ -173,6 +214,13 @@ const updateStatus = async () => {
   } finally {
     updating.value = false
   }
+}
+
+const performUpdate = async () => {
+  // call the existing update flow; keep modal open while updating
+  await updateStatus()
+  // close modal if still open (navigation may have occurred)
+  showConfirm.value = false
 }
 
 const formatDate = (iso?: string) => {
